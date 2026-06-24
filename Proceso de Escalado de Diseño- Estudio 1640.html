@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa de Acción 30 Días — Equipo Creativo + IA | Estudio 1640</title>
+    <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;500;600;700;800;900&family=Fustat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0c0c0c;
+            --bg-secondary: #111111;
+            --bg-card: #161616;
+            --bg-card-hover: #1a1a1a;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --text-muted: #666666;
+            --accent: #262626;
+            --border: #262626;
+            --border-light: #333333;
+            --highlight: #ffffff;
+            --badge-alta: #ff4444;
+            --badge-media: #ffaa00;
+            --badge-baja: #44aa44;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Fustat', sans-serif;
+            font-weight: 400;
+            color: var(--text-primary);
+            background: var(--bg-primary);
+            line-height: 1.7;
+            font-size: 15px;
+        }
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 60px 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%; right: -20%;
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(35,18,61,0.4) 0%, transparent 70%);
+            border-radius: 50%; z-index: 0;
+        }
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: -30%; left: -10%;
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(28,41,61,0.3) 0%, transparent 70%);
+            border-radius: 50%; z-index: 0;
+        }
+        .hero-content { position: relative; z-index: 1; max-width: 900px; }
+        .hero-label {
+            font-family: 'Unbounded', sans-serif;
+            font-weight: 700; font-size: 14px;
+            letter-spacing: 3px; text-transform: uppercase;
+            color: var(--text-muted); margin-bottom: 24px;
+        }
+        .hero h1 {
+            font-family: 'Unbounded', sans-serif;
+            font-weight: 900;
+            font-size: clamp(36px, 6vw, 72px);
+            line-height: 1.1; color: var(--text-primary); margin-bottom: 20px;
+        }
+        .hero h1 span {
+            display: block; font-weight: 300;
+            font-size: 0.5em; color: var(--text-secondary); margin-top: 12px;
+        }
+        .hero-subtitle {
+            font-family: 'Fustat', sans-serif; font-weight: 300;
+            font-size: 20px; color: var(--text-secondary);
+            max-width: 600px; margin: 0 auto 40px;
+        }
+        .hero-meta {
+            font-family: 'Fustat', sans-serif; font-weight: 300;
+            font-size: 14px; color: var(--text-muted); letter-spacing: 1px;
+        }
+        .scroll-indicator {
+            position: absolute; bottom: 40px; left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+            40% { transform: translateX(-50%) translateY(-10px); }
+            60% { transform: translateX(-50%) translateY(-5px); }
+        }
+        .section-nav {
+            position: sticky; top: 0;
+            background: rgba(12, 12, 12, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            z-index: 100; padding: 16px 0;
+        }
+        .section-nav-inner {
+            max-width: 1200px; margin: 0 auto;
+            padding: 0 40px; display: flex; gap: 8px;
+            overflow-x: auto; scrollbar-width: none;
+        }
+        .section-nav-inner::-webkit-scrollbar { display: none; }
+        .nav-item {
+            font-family: 'Unbounded', sans-serif; font-weight: 600;
+            font-size: 11px; letter-spacing: 1px;
+            text-transform: uppercase; color: var(--text-muted);
+            text-decoration: none; padding: 8px 16px;
+            border-radius: 20px; white-space: nowrap;
+            transition: all 0.3s ease; border: 1px solid transparent;
+        }
+        .nav-item:hover, .nav-item.active {
+            color: var(--text-primary); background: var(--bg-card);
+            border-color: var(--border-light);
+        }
+        .container { max-width: 1000px; margin: 0 auto; padding: 0 40px; }
+        section { padding: 80px 0; border-bottom: 1px solid var(--border); }
+        section:last-child { border-bottom: none; }
+        h2 {
+            font-family: 'Unbounded', sans-serif; font-weight: 700;
+            font-size: clamp(24px, 4vw, 36px);
+            color: var(--text-primary); margin-bottom: 40px; line-height: 1.2;
+        }
+        h2 .number { font-weight: 300; color: var(--text-muted); margin-right: 12px; }
+        h3 {
+            font-family: 'Unbounded', sans-serif; font-weight: 600;
+            font-size: 20px; color: var(--text-primary);
+            margin: 40px 0 20px; padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+        h4 {
+            font-family: 'Unbounded', sans-serif; font-weight: 600;
+            font-size: 16px; color: var(--text-primary); margin: 28px 0 12px;
+        }
+        p {
+            font-family: 'Fustat', sans-serif; font-weight: 400;
+            font-size: 15px; color: var(--text-secondary); margin-bottom: 16px;
+        }
+        strong { font-weight: 600; color: var(--text-primary); }
+        .highlight-box {
+            background: var(--bg-card); border-left: 3px solid var(--text-primary);
+            padding: 24px 28px; margin: 24px 0;
+            border-radius: 0 12px 12px 0;
+        }
+        .highlight-box p {
+            font-family: 'Unbounded', sans-serif; font-weight: 700;
+            font-size: 18px; color: var(--text-primary); margin: 0;
+        }
+        .highlight-box .subtitle {
+            font-family: 'Fustat', sans-serif; font-weight: 300;
+            font-size: 14px; color: var(--text-muted); margin-top: 8px;
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px; margin: 24px 0;
+        }
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px; margin: 24px 0;
+        }
+        .card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 12px; padding: 24px;
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            background: var(--bg-card-hover); border-color: var(--border-light);
+            transform: translateY(-2px);
+        }
+        .card .label {
+            font-family: 'Fustat', sans-serif; font-weight: 600;
+            font-size: 11px; color: var(--text-muted);
+            text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px;
+        }
+        .card .value {
+            font-family: 'Unbounded', sans-serif; font-weight: 700;
+            font-size: 15px; color: var(--text-primary); line-height: 1.4;
+        }
+        .card .value-small {
+            font-family: 'Fustat', sans-serif; font-weight: 400;
+            font-size: 14px; color: var(--text-secondary);
+            line-height: 1.5; margin-top: 8px;
+        }
+        .table-container {
+            overflow-x: auto; margin: 24px 0;
+            border-radius: 12px; border: 1px solid var(--border);
+        }
+        table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        th {
+            font-family: 'Unbounded', sans-serif; font-weight: 600;
+            font-size: 11px; text-align: left; padding: 14px 16px;
+            background: var(--bg-card); color: var(--text-muted);
+            text-transform: uppercase; letter-spacing: 1px;
+            border-bottom: 1px solid var(--border); white-space: nowrap;
+        }
+        td {
+            padding: 14px 16px; border-bottom: 1px solid var(--border);
+            color: var(--text-secondary); font-weight: 400; vertical-align: top;
+        }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: rgba(255,255,255,0.02); }
+        .bottleneck-list { margin: 20px 0; }
+        .bottleneck-item {
+            display: flex; justify-content: space-between;
+            align-items: center; padding: 16px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .bottleneck-item:last-child { border-bottom: none; }
+        .bottleneck-name {
+            font-family: 'Fustat', sans-serif; font-weight: 500;
+            font-size: 15px; color: var(--text-primary);
+        }
+        .badge {
+            font-family: 'Unbounded', sans-serif; font-weight: 700;
+            font-size: 10px; padding: 6px 14px; border-radius: 20px;
+            text-transform: uppercase; letter-spacing: 1px; white-space: nowrap;
+        }
+        .badge-alta {
+            background: rgba(255, 68, 68, 0.15); color: var(--badge-alta);
+            border: 1px solid rgba(255, 68, 68, 0.3);
+        }
+        .badge-media {
+            background: rgba(255, 170, 0, 0.15); color: var(--badge-media);
+            border: 1px solid rgba(255, 170, 0, 0.3);
+        }
+        .badge-baja {
+            background: rgba(68, 170, 68, 0.15); color: var(--badge-baja);
+            border: 1px solid rgba(68, 170, 68, 0.3);
+        }
+        .suggestion-card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 12px; padding: 24px; margin-bottom: 16px;
+            transition: all 0.3s ease;
+        }
+        .suggestion-card:hover { border-color: var(--border-light); }
+        .suggestion-card h4 {
+            font-family: 'Unbounded', sans-serif; font-weight: 700;
+            font-size: 14px; margin: 0 0 10px 0; color: var(--text-primary);
+        }
+        .suggestion-card p {
+            margin: 0; font-size: 14px; color: var(--text-secondary); line-height: 1.6;
+        }
+        ul, ol { padding-left: 24px; margin: 16px 0; }
+        li { margin-bottom: 10px; color: var(--text-secondary); font-size: 15px; }
+        li::marker { color: var(--text-muted); }
+        .checklist { list-style: none; padding: 0; }
+        .checklist li {
+            position: relative; padding-left: 32px; margin-bottom: 12px;
+        }
+        .checklist li::before {
+            content: '☐'; position: absolute; left: 0;
+            color: var(--text-muted); font-size: 18px;
+        }
+        blockquote {
+            border-left: 3px solid var(--text-primary);
+            padding: 20px 28px; margin: 32px 0;
+            background: var(--bg-card);
+            border-radius: 0 12px 12px 0;
+            font-family: 'Fustat', sans-serif; font-weight: 300;
+            font-size: 18px; color: var(--text-secondary);
+            font-style: italic; line-height: 1.7;
+        }
+        blockquote strong {
+            font-weight: 600; color: var(--text-primary); font-style: normal;
+        }
+        .section-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border), transparent);
+            margin: 60px 0;
+        }
+        .footer {
+            padding: 60px 40px; text-align: center;
+            border-top: 1px solid var(--border);
+        }
+        .footer-logo {
+            font-family: 'Unbounded', sans-serif; font-weight: 900;
+            font-size: 24px; color: var(--text-primary); margin-bottom: 12px;
+        }
+        .footer-tagline {
+            font-family: 'Fustat', sans-serif; font-weight: 300;
+            font-size: 14px; color: var(--text-muted);
+            letter-spacing: 2px; text-transform: uppercase;
+        }
+        .footer-meta {
+            font-family: 'Fustat', sans-serif; font-weight: 300;
+            font-size: 12px; color: var(--text-muted); margin-top: 24px;
+        }
+        .option-card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 12px; padding: 24px; margin-bottom: 16px;
+        }
+        .option-card .option-title {
+            font-family: 'Unbounded', sans-serif; font-weight: 700;
+            font-size: 14px; color: var(--text-primary); margin-bottom: 12px;
+            padding-bottom: 12px; border-bottom: 1px solid var(--border);
+        }
+        .option-card ul { margin: 0; padding-left: 20px; }
+        .option-card li { font-size: 14px; margin-bottom: 8px; }
+        .metric-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px; margin: 24px 0;
+        }
+        .metric-card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 12px; padding: 24px; text-align: center;
+        }
+        .metric-card .metric-value {
+            font-family: 'Unbounded', sans-serif; font-weight: 900;
+            font-size: 32px; color: var(--text-primary); margin-bottom: 8px;
+        }
+        .metric-card .metric-label {
+            font-family: 'Fustat', sans-serif; font-weight: 500;
+            font-size: 13px; color: var(--text-muted);
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+        .principle-box {
+            background: linear-gradient(135deg, rgba(35,18,61,0.3) 0%, rgba(28,41,61,0.2) 100%);
+            border: 1px solid var(--border);
+            border-radius: 16px; padding: 40px; margin: 32px 0; text-align: center;
+        }
+        .principle-box p {
+            font-family: 'Fustat', sans-serif; font-weight: 300;
+            font-size: 20px; color: var(--text-secondary);
+            line-height: 1.8; margin: 0;
+        }
+        .principle-box strong { color: var(--text-primary); font-weight: 600; }
+        @media (max-width: 768px) {
+            .hero { padding: 40px 20px; min-height: auto; padding-top: 80px; padding-bottom: 80px; }
+            .container { padding: 0 20px; }
+            section { padding: 50px 0; }
+            .grid-2, .grid-3 { grid-template-columns: 1fr; }
+            .section-nav-inner { padding: 0 20px; }
+            .bottleneck-item { flex-direction: column; align-items: flex-start; gap: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="hero">
+    <div class="hero-content">
+        <div class="hero-label">Estudio 1640</div>
+        <h1>Mapa de Acción<br>30 Días<span>Equipo Creativo + IA</span></h1>
+        <p class="hero-subtitle">Proceso de escalado del área de diseño con inteligencia artificial, batching y sistemas de calidad.</p>
+        <p class="hero-meta">Análisis de respuestas de Ayelen y Lourdes | Junio 2026</p>
+    </div>
+    <div class="scroll-indicator">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2">
+            <path d="M12 5v14M5 12l7 7 7-7"/>
+        </svg>
+    </div>
+</div>
+
+<nav class="section-nav">
+    <div class="section-nav-inner">
+        <a href="#promedio" class="nav-item">Promedio</a>
+        <a href="#equipo" class="nav-item">Equipo</a>
+        <a href="#sistemas" class="nav-item">Sistemas</a>
+        <a href="#calidad" class="nav-item">Calidad</a>
+        <a href="#ia" class="nav-item">IA</a>
+        <a href="#kpi" class="nav-item">KPIs</a>
+        <a href="#plan30" class="nav-item">Plan 30 Días</a>
+        <a href="#recursos" class="nav-item">Recursos</a>
+        <a href="#resultados" class="nav-item">Resultados</a>
+    </div>
+</nav>
+
+<div class="container">
+
+<section id="promedio">
+    <h2><span class="number">01.</span>Promedio de Respuestas — Equipo de Diseño</h2>
+    <p style="color: var(--text-muted); margin-bottom: 40px;">Análisis comparativo de las respuestas de Ayelen y Lourdes | Estudio 1640</p>
+
+    <h3>1. Distribución del Tiempo: Diseño vs. Mecánico</h3>
+    <div class="highlight-box">
+        <p>50% Diseñar / 50% Mecánico</p>
+        <div class="subtitle">Promedio entre ambas diseñadoras</div>
+    </div>
+    <div class="grid-2">
+        <div class="card">
+            <div class="label">Ayelen</div>
+            <div class="value">40% Diseño / 60% Mecánico</div>
+        </div>
+        <div class="card">
+            <div class="label">Lourdes</div>
+            <div class="value">60% Diseño / 40% Mecánico</div>
+        </div>
+    </div>
+    <p>Ambas coinciden en que el cambio de chip mental entre cuentas les frena un poco, pero se adaptan rápido.</p>
+
+    <h3>2. Tiempos Promedio por Tipo de Pieza</h3>
+    <div class="table-container">
+        <table>
+            <tr><th>Tipo de Pieza</th><th>Ayelen</th><th>Lourdes</th><th>Promedio</th></tr>
+            <tr><td>Posteo estático (feed)</td><td>&lt; 30 min</td><td>&lt; 30 min</td><td><strong style="color: var(--text-primary);">&lt; 30 minutos</strong></td></tr>
+            <tr><td>Carrusel 3-4 placas</td><td>30-45 min</td><td>45-60 min</td><td><strong style="color: var(--text-primary);">~45 minutos</strong></td></tr>
+            <tr><td>Reels (edición completa)</td><td>1 hora</td><td>&lt; 1 hora</td><td><strong style="color: var(--text-primary);">~45-60 minutos</strong></td></tr>
+            <tr><td>Redimensión Pauta</td><td>1-2 horas</td><td>1-2 horas</td><td><strong style="color: var(--text-primary);">1-2 horas</strong></td></tr>
+            <tr><td>Piezas Especiales</td><td>2-3 días (intercalado)</td><td>4 horas (dedicado)</td><td><strong style="color: var(--text-primary);">4 horas a 2-3 días</strong></td></tr>
+        </table>
+    </div>
+
+    <h3>3. Mayor "Agujero Negro" de Tiempo</h3>
+    <div class="highlight-box">
+        <p>Coincidencia total: Ambas señalan el cambio brusco de frenar el armado de redes para diseñar piezas especiales (menús, tarjetas, branding) como uno de los principales agujeros negros.</p>
+    </div>
+    <div class="grid-2">
+        <div class="card">
+            <div class="label">Ayelen también menciona</div>
+            <div class="value-small">Mucho ida y vuelta en piezas ya entregadas, reabrir editables usados</div>
+        </div>
+        <div class="card">
+            <div class="label">Lourdes también menciona</div>
+            <div class="value-small">Redimensiónar una misma gráfica para todos los formatos de pauta</div>
+        </div>
+    </div>
+
+    <h3>4. Motivo Real de las Urgencias del Día</h3>
+    <div class="highlight-box">
+        <p>Textos o ideas que no estaban 100% aprobados y hay que rehacer sobre la marcha.</p>
+    </div>
+    <p>Coincidencia total entre ambas diseñadoras.</p>
+
+    <h3>5. Piezas Especiales: La Más Trabajosa</h3>
+    <div class="grid-2">
+        <div class="card">
+            <div class="label">Ayelen</div>
+            <div class="value-small"><strong style="color: var(--text-primary);">Logos:</strong> investigación, desarrollo de identidad, bocetado, ida y vuelta con clientes. Lo que mas disfruta pero mas complicado de encajar.</div>
+        </div>
+        <div class="card">
+            <div class="label">Lourdes</div>
+            <div class="value-small"><strong style="color: var(--text-primary);">Imprimibles</strong> (falta de info previa: medidas, doble cara) y <strong style="color: var(--text-primary);">KV / piezas madre</strong> (requieren tiempo creativo y pruebas de versión).</div>
+        </div>
+    </div>
+
+    <h3>6. Tiempo en Reuniónes</h3>
+    <div class="highlight-box">
+        <p>Aproximadamente 1 hora diaria</p>
+    </div>
+    <div class="grid-2">
+        <div class="card"><div class="label">Ayelen</div><div class="value">1-2 horas</div></div>
+        <div class="card"><div class="label">Lourdes</div><div class="value">&lt; 1 hora</div></div>
+    </div>
+
+    <h3>7. Cuellos de Botella Comunes</h3>
+    <div class="bottleneck-list">
+        <div class="bottleneck-item">
+            <span class="bottleneck-name">Cambios de última hora</span>
+            <span class="badge badge-alta">Frecuencia Alta</span>
+        </div>
+        <div class="bottleneck-item">
+            <span class="bottleneck-name">Retroalimentación vaga del cliente</span>
+            <span class="badge badge-media">Frecuencia Media</span>
+        </div>
+        <div class="bottleneck-item">
+            <span class="bottleneck-name">Espera de aprobación interna</span>
+            <span class="badge badge-media">Frecuencia Media</span>
+        </div>
+        <div class="bottleneck-item">
+            <span class="bottleneck-name">Falta de recursos o assets</span>
+            <span class="badge badge-media">Frecuencia Media</span>
+        </div>
+        <div class="bottleneck-item">
+            <span class="bottleneck-name">Herramientas de software lentas</span>
+            <span class="badge badge-media">Frecuencia Media</span>
+        </div>
+    </div>
+
+    <h3>8. IA Utilizada en el Día a Día</h3>
+    <div class="grid-2">
+        <div class="card">
+            <div class="label">Gemini / ChatGPT</div>
+            <div class="value-small">Traducciones, dudas de desarrollo, generación de prompts para imágenes</div>
+        </div>
+        <div class="card">
+            <div class="label">Adobe Firefly</div>
+            <div class="value-small">Limpiar imágenes, expandir fondos, mejorar calidad</div>
+        </div>
+        <div class="card">
+            <div class="label">Adobe Podcast</div>
+            <div class="value-small">Limpieza de audio de vídeos</div>
+        </div>
+        <div class="card">
+            <div class="label">Naño Banana</div>
+            <div class="value-small">Crear imágenes a partir de prompts o referencias reales (Lourdes)</div>
+        </div>
+    </div>
+
+    <h3>9. Sugerencias para Mejorar los Procesos</h3>
+    <div class="suggestion-card">
+        <h4>Revisión previa de 5 minutos</h4>
+        <p>Todo el equipo revisa el pedido, brief o pieza antes de entregar para evitar arrastrar errores. Revisar portada, imágenes, copy y editables antes de la entrega final.</p>
+    </div>
+    <div class="suggestion-card">
+        <h4>Carga correcta en Trello</h4>
+        <p>Cuándo hay un cambio, cargar en Trello "Cambio posteo - Marca" para que no se pierda del radar. Evitar avisos solo por chat multiplicados en 5 marcas.</p>
+    </div>
+    <div class="suggestion-card">
+        <h4>Aprobación previa en clientes con ida y vuelta</h4>
+        <p>Intentar aprobación previa de copy, contenido o imágenes para evitar editar contenidos ya entregados que no se aprobaron previamente.</p>
+    </div>
+    <div class="suggestion-card">
+        <h4>Cuantificar piezas en Trello</h4>
+        <p>Aclarar la cantidad de piezas en cada tarea (ej: "Pauta x4 + adaptaciones"). Una tarea puede ser de 4 piezas o de 70 y no llevan el mismo tiempo.</p>
+    </div>
+    <div class="suggestion-card">
+        <h4>Material nomenclado y organizado</h4>
+        <p>Sesiones, imágenes de IA, banco de imágenes, etc. Todo con nomenclatura clara para agilizar tiempos.</p>
+    </div>
+    <div class="suggestion-card">
+        <h4>Consultar tiempos antes de definir deadlines</h4>
+        <p>Consultar con Diseño y líder de Diseño los tiempos necesarios para piezas nuevas o de pauta antes de definir el deadline con el cliente, considerando carga de trabajo y calendario general.</p>
+    </div>
+    <div class="suggestion-card">
+        <h4>Equilibrio entre formatos</h4>
+        <p>Distribuir reels, estáticas y carruseles para que no caigan todos los reels de todas las cuentas el mismo dia.</p>
+    </div>
+    <div class="suggestion-card">
+        <h4>Editar sesiones en bloque</h4>
+        <p>Editar 4 reels juntos de una misma sesion en lugar de a "puchitos". El estilo, recursos (animacion, transiciones, subtitulos, música, color) son los mismos.</p>
+    </div>
+    <div class="suggestion-card">
+        <h4>Portadas de Reels simples</h4>
+        <p>Que sean un frame del video o con diseño simple, realizadas directamente desde Premiere para evitar ir a Photoshop/Illustrator.</p>
+    </div>
+    <div class="suggestion-card">
+        <h4>Vídeos para historias breves</h4>
+        <p>Idealmente evitar si hay mucha carga de reels. Si no, que no duren más de 10 seg con texto fijo. Si se subtitula o usan más de dos plaños, pasa a ser un reel.</p>
+    </div>
+    <div class="suggestion-card">
+        <h4>Contemplar espacio para imprevistos</h4>
+        <p>Reservar al menos una hora diaria para urgencias, para no estar corriendo siempre las tareas planificadas.</p>
+    </div>
+    <div class="suggestion-card">
+        <h4>Plantillas reutilizables para mailing</h4>
+        <p>Volver a crear plantillas para agilizar tiempos y mantener línea visual consistente. Entender cómo funciona el mailing completo en conjunto, no solo piezas sueltas.</p>
+    </div>
+</section>
+
+<div class="section-divider"></div>
+
+<section id="equipo">
+    <h2><span class="number">02.</span>Estructura del Equipo (3 personas)</h2>
+    <div class="option-card">
+        <div class="option-title">Opción A — Por Especialidad</div>
+        <ul>
+            <li><strong>líder de Diseño y Contenido:</strong> Calidad, marca, piezas criticas, desbloqueos</li>
+            <li><strong>Diseñadora 1:</strong> Contenido social recurrente + templating</li>
+            <li><strong>Diseñadora 2:</strong> Ads/banners + redimensiónados</li>
+        </ul>
+    </div>
+    <div class="option-card">
+        <div class="option-title">Opción B — Productora + Ejecutores</div>
+        <ul>
+            <li><strong>líder:</strong> Revisión y desbloqueos</li>
+            <li><strong>Diseñadora 1:</strong> Hace el grueso de la producción</li>
+            <li><strong>Diseñadora 2:</strong> Apoya en picos de demanda</li>
+        </ul>
+    </div>
+    <div class="option-card">
+        <div class="option-title">Opción C — Por Cliente</div>
+        <ul>
+            <li>Cada diseñadora lleva distintas cuentas</li>
+            <li>líder hace soporte y QA general</li>
+            <li><em>Pool de freelancers testados (1–2) para picos de piezas que no tengan que ver con marketing digital.</em></li>
+        </ul>
+    </div>
+    <h3>Mi Rol como líder</h3>
+    <blockquote>No puedo escalar un area si estoy operando.</blockquote>
+    <div class="table-container">
+        <table>
+            <tr><th>De</th><th>A</th></tr>
+            <tr><td>Diseñadora + Directora de Arte + líder</td><td><strong>Sólo Dirección de Arte</strong> para nuevos clientes o campañas</td></tr>
+            <tr><td>Hacer piezas</td><td><strong>Hacer que el equipo haga piezas</strong></td></tr>
+        </table>
+    </div>
+    <h3>Métricas de Éxito</h3>
+    <div class="metric-row">
+        <div class="metric-card"><div class="metric-value">+15-20%</div><div class="metric-label">Volumen de piezas por persona</div></div>
+        <div class="metric-card"><div class="metric-value">1</div><div class="metric-label">Rondas de correcciones máximo</div></div>
+        <div class="metric-card"><div class="metric-value">↓</div><div class="metric-label">Revisiones = calidad</div></div>
+    </div>
+    <h3>Blindajes del líder</h3>
+    <ul class="checklist">
+        <li>Decir "no" a briefs vacios o urgencias sin priorización</li>
+        <li>Proteger tiempo de foco (bloques sin Slack)</li>
+        <li>Filtrar cuentas: no pasar cambios sin impacto claro</li>
+        <li>Educar clientes: explicar por que batching o 1 ronda les ahorra tiempo</li>
+        <li>Dar feedback util (objetivo + marca, no "me gusta menos")</li>
+    </ul>
+</section>
+
+<div class="section-divider"></div>
+
+<section id="sistemas">
+    <h2><span class="number">03.</span>4 Sistemas para Subir Volumen</h2>
+    <div class="grid-2">
+        <div class="card">
+            <div class="label">Sistema 01</div>
+            <div class="value">Templatizar</div>
+            <div class="value-small">60–80% menos tiempo en piezas repetidas. 3–5 plantillas base (post, story, banner, anuncio). bloquear fijos, dejar variables.</div>
+        </div>
+        <div class="card">
+            <div class="label">Sistema 02</div>
+            <div class="value">Batching</div>
+            <div class="value-small">Menos context-switching. Una vez por semana/quincena, diseñar todo el contenido de ese periodo para un cliente.</div>
+        </div>
+        <div class="card">
+            <div class="label">Sistema 03</div>
+            <div class="value">Biblioteca de Bloques</div>
+            <div class="value-small">Reutilizar sin reinventar. Iconos, fondos, badges, titulares, fotomontajes en Figma/Canva.</div>
+        </div>
+        <div class="card">
+            <div class="label">Sistema 04</div>
+            <div class="value">Redimensiónado Automático</div>
+            <div class="value-small">Chau a 20 versiones. Canva resize, Figma Auto Layout, plantillas por formato.</div>
+        </div>
+    </div>
+</section>
+
+<div class="section-divider"></div>
+
+<section id="calidad">
+    <h2><span class="number">04.</span>6 Palancas para subir Calidad</h2>
+    <div class="grid-2">
+        <div class="card">
+            <div class="label">Palanca 01</div>
+            <div class="value">Guía de Marca </div>
+            <div class="value-small">No es un PDF. 1 página: colores, tipos, usos correctos/incorrectos, ejemplos buenos/malos.</div>
+        </div>
+        <div class="card">
+            <div class="label">Palanca 02</div>
+            <div class="value">Checklist de Salida</div>
+            <div class="value-small">¿Tipografía correcta? ¿Legible en celular? ¿CTA claro? ¿Tamaño correcto? ¿Margen seguro?</div>
+        </div>
+        <div class="card">
+            <div class="label">Palanca 03</div>
+            <div class="value">Revisión entre Pares</div>
+            <div class="value-small">Aprenden todos. 15 min semanales, 1–2 piezas, 3 comentarios concretos.</div>
+        </div>
+        <div class="card">
+            <div class="label">Palanca 04</div>
+            <div class="value">Componentes (Figma)</div>
+            <div class="value-small">Evitas errores. Logos, botones, titulares con estilos fijos.</div>
+        </div>
+        <div class="card">
+            <div class="label">Palanca 05</div>
+            <div class="value">Principios Claros</div>
+            <div class="value-small">3 reglas: "Siempre legible en celular", "Menos texto que imagen", "CTA visible".</div>
+        </div>
+        <div class="card">
+            <div class="label">Palanca 06</div>
+            <div class="value">Banco de Referencias</div>
+            <div class="value-small">Alineas con cliente. Moodboard por cliente antes de producir.</div>
+        </div>
+    </div>
+</section>
+
+<div class="section-divider"></div>
+
+<section id="ia">
+    <h2><span class="number">05.</span>IA: Donde Usar y Donde No</h2>
+    <blockquote><strong>Regla:</strong> IA para velocidad y repetición. Humanos para criterio, marca y emoción.</blockquote>
+    <div class="table-container">
+        <table>
+            <tr><th>Etapa</th><th>IA (automatizar)</th><th>Humano (100%)</th></tr>
+            <tr><td><strong>Brief</strong></td><td>Parsear pedidos, extraer objetivos, formatos, deadlines, tono</td><td>Validar estrategia, alcance y viabilidad</td></tr>
+            <tr><td><strong>Ideacion</strong></td><td>Moodboards, variaciones de concepto, pairing copy-imagen</td><td>Dirección creativa, narrativa de marca</td></tr>
+            <tr><td><strong>Producción</strong></td><td>Redimensiónado, recorte/fondos, upscaling, relleno de plantillas, batch de textos</td><td>Composición final, jerarquia, ajustes de marca</td></tr>
+            <tr><td><strong>QA / Revisión</strong></td><td>Chequeo de contraste, legibilidad, ortografia, consistencia de colores/fuentes</td><td>Decision final, coherencia emocional, CTA</td></tr>
+        </table>
+    </div>
+    <h3>Herramientas Especificas</h3>
+    <div class="grid-2">
+        <div class="card">
+            <div class="label">Claude</div>
+            <div class="value-small">Multiplicar variantes de anuncios, conectores Canva. <strong>Clave:</strong> identidad de marca al 100% clara.</div>
+        </div>
+        <div class="card">
+            <div class="label">ChatGPT</div>
+            <div class="value-small">Mejor interpretación de instrucciones para generar imágenes.</div>
+        </div>
+    </div>
+    <h3>Pre-requisito para IA</h3>
+    <p>Definir parametros de diseño por cuenta: jerarquias de titulos, bajadas, tipografías, colores, fotos de referencia.</p>
+</section>
+
+<div class="section-divider"></div>
+
+<section id="kpi">
+    <h2><span class="number">06.</span>Métricas que Importan (4 KPIs)</h2>
+    <div class="metric-row">
+        <div class="metric-card"><div class="metric-value">01</div><div class="metric-label">Tiempo medio de entrega por tipo de pieza (sin revisiones)</div></div>
+        <div class="metric-card"><div class="metric-value">02</div><div class="metric-label">N de rondas de revisión por pieza</div></div>
+        <div class="metric-card"><div class="metric-value">03</div><div class="metric-label">% de piezas que pasan revisión interna a la primera</div></div>
+        <div class="metric-card"><div class="metric-value">04</div><div class="metric-label">Capacidad real: cuantas piezas por semana sin sobrecargar</div></div>
+    </div>
+</section>
+
+<div class="section-divider"></div>
+
+<section id="plan30">
+    <h2><span class="number">07.</span>Plan de 30 Días (Intensivo)</h2>
+    <h3>Semana 1 (Días 1–7): Fundamentos + Sistemas base</h3>
+    <div class="table-container">
+        <table>
+            <tr><th>Día</th><th>Acción</th><th>Responsable</th><th>Output</th></tr>
+            <tr><td>1</td><td>Definir estructura de equipo (A, B o C)</td><td>líder</td><td>Estructura elegida y comunicada</td></tr>
+            <tr><td>1</td><td>Mapear volumen actual: piezas + tiempos</td><td>Ejecutivo</td><td>Inventario en Sheets</td></tr>
+            <tr><td>2</td><td>Crear Brand Kit minimo (cliente más activo)</td><td>líder + Diseñadora 1</td><td>1 pagina en Figma</td></tr>
+            <tr><td>2</td><td>Arquitectura de archivos + nomenclatura</td><td>líder</td><td>Carpetas listas en Drive</td></tr>
+            <tr><td>3</td><td>Template de brief estandar</td><td>Ejecutivo</td><td>Formato en Notion/Typeform</td></tr>
+            <tr><td>3</td><td>Checklist de salida (5 items)</td><td>líder</td><td>Checklist visible</td></tr>
+            <tr><td>4</td><td>3 plantillas base (post, story, banner)</td><td>Diseñadora 1</td><td>Plantillas bloqueadas</td></tr>
+            <tr><td>4</td><td>Biblioteca de bloques inicial (10 bloques)</td><td>Diseñadora 2</td><td>Logos, botones, fondos en Figma</td></tr>
+            <tr><td>5</td><td>Capacitacion express: Claude + Canva connectors</td><td>líder</td><td>Diseñadora 1 prueba 1 variante</td></tr>
+            <tr><td>5</td><td>Capacitacion express: ChatGPT para imágenes</td><td>líder</td><td>Diseñadora 2 prueba 1 moodboard</td></tr>
+            <tr><td>6</td><td>Primer batching piloto: 1 cliente, toda la semana</td><td>Ejecutivo + Diseñadora 1</td><td>5 piezas en bloque</td></tr>
+            <tr><td>7</td><td>Revisión entre pares #1</td><td>Todo el equipo</td><td>Feedback documentado</td></tr>
+        </table>
+    </div>
+    <p style="color: var(--text-muted); margin-top: 16px;"><strong>Checklist Semana 1:</strong> Estructura de equipo definida | Brand Kit de 1 cliente | 3 plantillas funcionando | Equipo probo IA al menos 1 vez | 1 batching Éxitoso</p>
+
+    <h3>Semana 2 (Días 8–14): IA en producción + Reglas</h3>
+    <div class="table-container">
+        <table>
+            <tr><th>Día</th><th>Acción</th><th>Responsable</th><th>Output</th></tr>
+            <tr><td>8</td><td>Definir parametros de diseño para 2 cuentas mas</td><td>Diseñadoras</td><td>Documento por cuenta</td></tr>
+            <tr><td>8</td><td>Regla de 1 ronda de cliente: comunicar a todos</td><td>Ejecutivo</td><td>Email/envio comunicado</td></tr>
+            <tr><td>9</td><td>IA en producción real: Claude genera 5 variantes</td><td>Diseñadora 1</td><td>Variantes listas, 1 elegida</td></tr>
+            <tr><td>9</td><td>IA en QA: revisar contraste/legibilidad</td><td>Diseñadora 2</td><td>Reporte de 3 piezas</td></tr>
+            <tr><td>10</td><td>Guia de marca viva (1 pagina) para cliente piloto</td><td>líder</td><td>Pagina aprobada por cliente</td></tr>
+            <tr><td>10</td><td>Componentes Figma: logos + botones + titulares</td><td>Diseñadora 2</td><td>5 componentes publicados</td></tr>
+            <tr><td>11</td><td>Batching semana 2: 2 clientes en paralelo</td><td>Ejecutivo + equipo</td><td>10 piezas en bloque</td></tr>
+            <tr><td>12</td><td>Primer freelancer test: 1 lote concreto</td><td>líder</td><td>3 piezas entregadas, evaluación</td></tr>
+            <tr><td>13</td><td>Revisión entre pares #2</td><td>Todo el equipo</td><td>Feedback + ajustes</td></tr>
+            <tr><td>14</td><td>Métricas semana 2: tiempos, revisiones, piezas</td><td>Ejecutivo</td><td>Dashboard inicial</td></tr>
+        </table>
+    </div>
+    <p style="color: var(--text-muted); margin-top: 16px;"><strong>Checklist Semana 2:</strong> IA produjo piezas reales | Regla de 1 ronda funcionando | Freelancer probado | Componentes en Figma</p>
+
+    <h3>Semana 3 (Días 15–21): Escalar + Medir</h3>
+    <div class="table-container">
+        <table>
+            <tr><th>Día</th><th>Acción</th><th>Responsable</th><th>Output</th></tr>
+            <tr><td>15</td><td>Replicar Brand Kit para 2 clientes mas</td><td>Diseñadoras</td><td>2 kits nuevos</td></tr>
+            <tr><td>15</td><td>+2 plantillas (carrusel, anuncio cuadrado)</td><td>Diseñadora 1</td><td>5 plantillas totales</td></tr>
+            <tr><td>16</td><td>Redimensiónado automatico: Canva resize + Figma Auto Layout</td><td>Diseñadora 2</td><td>1 pieza en 4 formatos &lt;10 min</td></tr>
+            <tr><td>17</td><td>Batching a 3 clientes</td><td>Ejecutivo</td><td>15 piezas en bloque</td></tr>
+            <tr><td>18</td><td>IA en ideacion: moodboard con ChatGPT</td><td>Diseñadora 2</td><td>Moodboard aprobado</td></tr>
+            <tr><td>19</td><td>Revisión entre pares #3</td><td>Todo el equipo</td><td></td></tr>
+            <tr><td>20</td><td>Feedback loop #1: ejecutivo comparte métricas de campana piloto</td><td>Ejecutivo</td><td>1 insight aplicado</td></tr>
+            <tr><td>21</td><td>Métricas semana 3: comparar vs. semana 1</td><td>Ejecutivo</td><td>Dashboard actualizado</td></tr>
+        </table>
+    </div>
+    <p style="color: var(--text-muted); margin-top: 16px;"><strong>Checklist Semana 3:</strong> 5 plantillas funcionando | Redimensiónado automático probado | 1 insight de performance aplicado</p>
+
+    <h3>Semana 4 (Días 22–30): Consolidar + Ajustar</h3>
+    <div class="table-container">
+        <table>
+            <tr><th>Día</th><th>Acción</th><th>Responsable</th><th>Output</th></tr>
+            <tr><td>22</td><td>Biblioteca de bloques completa: 20+ elementos</td><td>Diseñadora 2</td><td>Biblioteca usable</td></tr>
+            <tr><td>22</td><td>Protocolo de escalamiento documentado</td><td>líder</td><td>Documento en Notion</td></tr>
+            <tr><td>23</td><td>Presupuesto de tiempo por cliente definido</td><td>Ejecutivo</td><td>Tabla de capacidad real</td></tr>
+            <tr><td>24</td><td>Batching a todos los clientes activos</td><td>Ejecutivo</td><td>Toda la producción en bloque</td></tr>
+            <tr><td>25</td><td>Revisión entre pares #4</td><td>Todo el equipo de diseño</td><td></td></tr>
+            <tr><td>26</td><td>Evaluación de freelancer: ¿entra al pool?</td><td>líder</td><td>Si/No + feedback</td></tr>
+            <tr><td>27</td><td>Métricas finales: comparar dia 1 vs. dia 27</td><td>Ejecutivo</td><td>Reporte de 30 días</td></tr>
+            <tr><td>28</td><td>Retrospectiva del equipo: ¿qué funcióno? ¿qué no?</td><td>líder</td><td>3 aprendizajes, 3 ajustes</td></tr>
+            <tr><td>29</td><td>Ajustar sistemas según métricas</td><td>líder</td><td>Sistemas v2</td></tr>
+            <tr><td>30</td><td>Plan de los siguientes 60 días</td><td>líder</td><td>Roadmap</td></tr>
+        </table>
+    </div>
+    <p style="color: var(--text-muted); margin-top: 16px;"><strong>Checklist Día 30:</strong> Volumen de piezas por persona subio 15-20% | Rondas de revisión bajaron a máximo 1 | El equipo usa IA semanalmente | Batching en todos los clientes | Métricas medidas</p>
+</section>
+
+<div class="section-divider"></div>
+
+<section>
+    <h2><span class="number">08.</span>Elementos Complementarios (Nuevos)</h2>
+    <h3>A. Onboarding de Marca (obligatorio antes de primera pieza)</h3>
+    <ul>
+        <li>Brand Kit Digital: colores hex, tipografías con pesos, logo SVG, 3-5 referencias fotograficas, tono de voz (3 adjetivos), arquetipo de cliente</li>
+        <li>Moodboard aprobado por cliente</li>
+        <li>3 ejemplos de piezas "buenas" de esa marca</li>
+        <li>Restricciones: que NUNCA hacer</li>
+    </ul>
+    <h3>B. Arquitectura de Archivos</h3>
+    <h3>C. Nomenclatura de Archivos</h3>
+    <h3>D. Formato de Brief Estandar</h3>
+    <p>Plantillas de brief 1, 2, 3 + el brief de calendario de contenidos</p>
+    <h3>E. Sistema de Versionado</h3>
+    <ul>
+        <li>máximo 3 versiones: v1 (propuesta), v2 (ajustes), v3 (final)</li>
+        <li>Cada versión con comentarios consolidados</li>
+        <li>Versión final = congelada. Cambios post-final = nuevo brief</li>
+    </ul>
+    <h3>F. Presupuesto de Tiempo por Cliente</h3>
+    <div class="table-container">
+        <table>
+            <tr><th>Cliente</th><th>Piezas/semana</th><th>Horas estimadas</th><th>Prioridad</th></tr>
+            <tr><td>Cliente A</td><td>8</td><td>16h</td><td>Alta</td></tr>
+            <tr><td>Cliente B</td><td>5</td><td>10h</td><td>Media</td></tr>
+            <tr><td>Cliente C</td><td>3</td><td>6h</td><td>Baja</td></tr>
+            <tr><td>Buffer</td><td>—</td><td>4h</td><td>Picos</td></tr>
+        </table>
+    </div>
+    <h3>G. Protocolo de Escalamiento</h3>
+    <div class="table-container">
+        <table>
+            <tr><th>Situación</th><th>Quien actua</th><th>Como</th></tr>
+            <tr><td>Cliente rechaza 3+ versiones</td><td>líder</td><td>Reunión con cliente, reset de brief</td></tr>
+            <tr><td>Pico imprevisto (&gt;20% carga)</td><td>Ejecutivo</td><td>Activa freelancer, lote concreto</td></tr>
+            <tr><td>Conflicto entre diseñadoras</td><td>Revisión entre pares + líder</td><td>15 min, foco en objetivo</td></tr>
+            <tr><td>Cambio post-final</td><td>Ejecutivo</td><td>Nuevo brief, nuevo ciclo</td></tr>
+            <tr><td>Herramienta falla</td><td>Diseñadora reporta a líder</td><td>Plan B manual</td></tr>
+        </table>
+    </div>
+    <h3>H. Capacitacion Express (30 días)</h3>
+    <div class="table-container">
+        <table>
+            <tr><th>Día</th><th>Tema</th><th>Formato</th></tr>
+            <tr><td>5</td><td>Claude: variantes + Canva connectors</td><td>Demo 1h</td></tr>
+            <tr><td>5</td><td>ChatGPT: imágenes y prompts</td><td>Demo 1h</td></tr>
+            <tr><td>10</td><td>Figma: componentes y Auto Layout</td><td>Workshop 2h</td></tr>
+            <tr><td>15</td><td>Batching y gestion del tiempo</td><td>Reunión 1h</td></tr>
+            <tr><td>20</td><td>Métricas: leer performance y aplicar</td><td>Reunión 1h</td></tr>
+        </table>
+    </div>
+</section>
+
+<div class="section-divider"></div>
+
+<section>
+    <h2><span class="number">09.</span>Mapa Cruzado: Recursos x Planes de Acción</h2>
+    <div class="table-container">
+        <table>
+            <tr><th>Plan de Acción</th><th>Recursos</th><th>Herramientas</th><th>Tiempo</th><th>Responsable</th><th>Métrica de éxito</th></tr>
+            <tr><td>Templatizar</td><td>Inventario de piezas</td><td>Canva, Figma</td><td>Días 4–5</td><td>Diseñadora 1</td><td>5 plantillas al día 15</td></tr>
+            <tr><td>Batching</td><td>Calendario de contenido</td><td>Notion/Sheets</td><td>Día 6</td><td>Ejecutivo</td><td>100% clientes en batching al día 24</td></tr>
+            <tr><td>Biblioteca de bloques</td><td>Iconos, fondos, badges</td><td>Figma, Drive</td><td>Días 4, 22</td><td>Diseñadora 2</td><td>20+ bloques al día 22</td></tr>
+            <tr><td>Redimensiónado auto</td><td>Plantillas por formato</td><td>Canva Pro, Figma</td><td>Día 16</td><td>Diseñadora 2</td><td>1 pieza en 4 formatos &lt;10 min</td></tr>
+            <tr><td>Guia de marca viva</td><td>Brand guidelines</td><td>Figma</td><td>Día 10</td><td>líder</td><td>1 guia aprobada por cliente piloto</td></tr>
+            <tr><td>Checklist de salida</td><td>Criterios de calidad</td><td>Notion</td><td>Día 3</td><td>líder</td><td>70% piezas pasan QA a primera al día 21</td></tr>
+            <tr><td>Revisión entre pares</td><td>Calendario fijo</td><td>15 min Reunión</td><td>Días 7, 13, 19, 25</td><td>Todo el equipo</td><td>4 revisiones completadas</td></tr>
+            <tr><td>Componentes Figma</td><td>Elementos de marca</td><td>Figma</td><td>Día 10</td><td>Diseñadora 2</td><td>5 componentes publicados</td></tr>
+            <tr><td>IA en producción</td><td>Parametros por cuenta</td><td>Claude, ChatGPT, Canva</td><td>Días 5–9</td><td>Diseñadoras + Ejecutivo</td><td>80% piezas usan IA al día 21</td></tr>
+            <tr><td>IA en QA</td><td>Checklist automatizable</td><td>Herramientas de contraste</td><td>Día 9</td><td>Diseñadora 2</td><td>3 piezas revisadas con IA</td></tr>
+            <tr><td>Freelancer</td><td>1–2 contactos testados</td><td>Behance, Dribbble</td><td>Día 12</td><td>líder</td><td>1 freelancer validado al día 26</td></tr>
+            <tr><td>Métricas</td><td>Tracker de tiempos</td><td>Sheets, Notion, Clockify</td><td>Días 14, 21, 27</td><td>Ejecutivo</td><td>Dashboard al día 14, reporte final al día 27</td></tr>
+            <tr><td>Onboarding de marca</td><td>Formulario</td><td>Typeform, Notion</td><td>Dia 1 (por cliente)</td><td>Ejecutivo</td><td>100% clientes con Brand Kit antes de primera pieza</td></tr>
+            <tr><td>Arquitectura de archivos</td><td>Guia de nomenclatura</td><td>Drive, Notion</td><td>Día 2</td><td>líder</td><td>0 archivos sueltos</td></tr>
+            <tr><td>Brief estandar</td><td>Template</td><td>Notion/ClickUp</td><td>Día 3</td><td>Ejecutivo</td><td>0 briefs vacíos recibidos</td></tr>
+            <tr><td>Versionado</td><td>Reglas de 3 versiones</td><td>Drive, Notion</td><td>Día 2</td><td>Todo el equipo</td><td>80% piezas en <=2 versiones</td></tr>
+            <tr><td>Presupuesto de tiempo</td><td>Tracker de horas</td><td>Clockify, Toggl</td><td>Día 23</td><td>Ejecutivo</td><td>0 sobrecargas detectadas</td></tr>
+            <tr><td>Protocolo de escalamiento</td><td>Documento de reglas</td><td>Notion</td><td>Día 22</td><td>líder</td><td>0 fuegos apagados por líder en tareas operativas</td></tr>
+        </table>
+    </div>
+</section>
+
+<div class="section-divider"></div>
+
+<section id="recursos">
+    <h2><span class="number">10.</span>Recursos Minimos (Costos)</h2>
+    <div class="table-container">
+        <table>
+            <tr><th>Recurso</th><th>Para que</th><th>Costo</th></tr>
+            <tr><td>Canva Pro</td><td>Plantillas, resize, conectores</td><td>~$9.300 arg/mes</td></tr>
+            <tr><td>Figma (Pro)</td><td>Componentes, biblioteca, guías</td><td>~$15/mes</td></tr>
+            <tr><td>Claude</td><td>Variantes de anuncios, copy</td><td>Gratis</td></tr>
+            <tr><td>ChatGPT Plus</td><td>Imágenes, moodboards</td><td>~$20/mes</td></tr>
+            <tr><td>Notion</td><td>Briefs, checklists, documentación</td><td>Gratis</td></tr>
+            <tr><td>Clockify/Toggl</td><td>Tracker de tiempos</td><td>Gratis</td></tr>
+            <tr><td>1 freelancer testado</td><td>Pico de semana 2</td><td>Variable</td></tr>
+        </table>
+    </div>
+</section>
+
+<div class="section-divider"></div>
+
+<section id="resultados">
+    <h2><span class="number">11.</span>Resultado Esperado al Día 30</h2>
+    <div class="table-container">
+        <table>
+            <tr><th>Metrica</th><th>Día 0</th><th>Día 30 (meta)</th></tr>
+            <tr><td>Piezas por persona / semana</td><td>X</td><td><strong style="color: var(--text-primary);">X + 15-20%</strong></td></tr>
+            <tr><td>Rondas de revisión por pieza</td><td>2–3</td><td><strong style="color: var(--text-primary);">1 máximo</strong></td></tr>
+            <tr><td>% piezas que pasan QA a la primera</td><td>40%</td><td><strong style="color: var(--text-primary);">70%</strong></td></tr>
+            <tr><td>Tiempo en piezas repetitivas</td><td>100%</td><td><strong style="color: var(--text-primary);">40% (60% en plantillas/IA)</strong></td></tr>
+            <tr><td>Clientes con batching</td><td>0%</td><td><strong style="color: var(--text-primary);">100%</strong></td></tr>
+            <tr><td>Uso de IA en producción</td><td>0%</td><td><strong style="color: var(--text-primary);">80% de piezas</strong></td></tr>
+        </table>
+    </div>
+</section>
+
+<div class="section-divider"></div>
+
+<section>
+    <h2><span class="number">12.</span>Riesgos y Reducción</h2>
+    <div class="grid-2">
+        <div class="card">
+            <div class="label">Riesgo</div>
+            <div class="value">Equipo resiste el cambio</div>
+            <div class="value-small">Capacitación express + mostrar resultados rápidos (día 5–7)</div>
+        </div>
+        <div class="card">
+            <div class="label">Riesgo</div>
+            <div class="value">Cliente rechaza 1 ronda</div>
+            <div class="value-small">Comunicar antes: "Asi ahorramos tiempo y calidad sube"</div>
+        </div>
+        <div class="card">
+            <div class="label">Riesgo</div>
+            <div class="value">IA no entrega calidad</div>
+            <div class="value-small">Parametros de marca definidos + humano en composición final</div>
+        </div>
+        <div class="card">
+            <div class="label">Riesgo</div>
+            <div class="value">Freelancer falla</div>
+            <div class="value-small">Tener 2 contactos, no 1. Lote CHICO primero</div>
+        </div>
+        <div class="card">
+            <div class="label">Riesgo</div>
+            <div class="value">líder sigue operando</div>
+            <div class="value-small">Bloques de calendario protegidos, delegar explicitamente</div>
+        </div>
+    </div>
+</section>
+
+<div class="section-divider"></div>
+
+<section>
+    <h2><span class="number">13.</span>Principio Director</h2>
+    <div class="principle-box">
+        <p>La IA no dirige la creatividad, <strong>la escala</strong>. Mi rol es poner los límites (marca, objetivo, jerarquía) y dejar que la IA explore dentro de ellos.</p>
+        <p style="margin-top: 20px; font-size: 16px;"><strong>IA para velocidad y repetición. Humanos para criterio, marca y emoción.</strong></p>
+    </div>
+</section>
+
+</div>
+
+<div class="footer">
+    <div class="footer-logo">Estudio 1640</div>
+    <div class="footer-tagline">Creatividad basada en datos</div>
+    <div class="footer-meta">Mapa de Acción 30 Días — Equipo Creativo + IA | Junio 2026</div>
+</div>
+
+<script>
+    document.querySelectorAll('.nav-item').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
+    });
+
+    const sections = document.querySelectorAll('section[id]');
+    const navItems = document.querySelectorAll('.nav-item');
+
+    window.addEventListener('scroll', () => {
+        let current = '';
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            if (scrollY >= sectionTop - 200) {
+                current = section.getAttribute('id');
+            }
+        });
+
+        navItems.forEach(item => {
+            item.classList.remove('active');
+            if (item.getAttribute('href') === '#' + current) {
+                item.classList.add('active');
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
